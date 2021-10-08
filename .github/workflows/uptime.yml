@@ -12,7 +12,6 @@ jobs:
       matrix:
         url:
           - "https://guess.taiidani.com/ping"
-          - "https://guess.taiidani.com/testfailure"
 
     steps:
       - name: Perform check
