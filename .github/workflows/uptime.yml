@@ -3,7 +3,7 @@ name: Perform uptime check
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0/5 * * * *"
+    - cron: "30 * * * *"
 
 jobs:
   stale:
@@ -16,7 +16,6 @@ jobs:
 
     steps:
       - name: Perform check
-        continue-on-error: true
         run: curl --get --max-time 10 --fail --retry 3 ${{ matrix.url }}
 
       - name: Notify
