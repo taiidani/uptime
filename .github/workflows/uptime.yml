@@ -2,7 +2,7 @@ name: Perform uptime check
 
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "0/5 * * * *"
 
 jobs:
   stale:
