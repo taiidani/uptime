@@ -1,0 +1,24 @@
+name: Perform uptime check
+
+on:
+  schedule:
+    - cron: "* * * * *"
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        url:
+          - "https://guess.taiidani.com/ping"
+          - "https://guess.taiidani.com/testfailure"
+
+    steps:
+      - name: Perform check
+        continue-on-error: true
+        run: curl --get --max-time 10 --fail --retry 3 ${{ matrix.url }}
+
+      - name: Notify
+        if: ${{ failure() }}
+        run: |
+          curl --request POST --header "Content-Type: application/json" ${{ secrets.NOTIFY_URL }} -d '{ "content": "The url ${{ matrix.url }} appears to be offline."}'
