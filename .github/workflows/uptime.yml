@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         url:
-          - "https://guess.taiidani.com/ping"
+          - "https://guess.taiidani.com"
 
     steps:
       - name: Perform check
