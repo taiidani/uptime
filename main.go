@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -15,9 +16,10 @@ import (
 	"github.com/taiidani/uptime/internal/backup"
 )
 
-var excludedOpts = []string{"nomad", "consul", "vault", "containerd", "cni"}
-
-var folder string
+var (
+	excludedOpts arrayFlag
+	folder       string
+)
 
 func main() {
 	flags()
@@ -38,8 +40,20 @@ func main() {
 	}
 }
 
+type arrayFlag []string
+
+func (i *arrayFlag) Set(value string) error {
+	*i = append(*i, value)
+	return nil
+}
+
+func (i *arrayFlag) String() string {
+	return strings.Join(*i, ",")
+}
+
 func flags() {
 	flag.StringVar(&folder, "folder", "", "the folder to be backed up")
+	flag.Var(&excludedOpts, "exclude", "folder name to exclude from backup")
 	flag.Parse()
 
 	if folder == "" {
