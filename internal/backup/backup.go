@@ -70,7 +70,7 @@ func (o *Operation) Backup(ctx context.Context, baseDir string, excludes []strin
 
 		// Now upload the file to S3
 		f, _ = os.Open(f.Name())
-		uploadPath := path.Join(o.bucketPrefix, dir.Name())
+		uploadPath := path.Join(o.bucketPrefix, dir.Name()+".tar.gz")
 		fmt.Printf("Uploading archive to %s://%s...\n", o.bucket, uploadPath)
 		_, err = o.client.PutObject(ctx, &s3.PutObjectInput{
 			Bucket: aws.String(o.bucket),
