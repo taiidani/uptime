@@ -59,12 +59,12 @@ func (o *Operation) Backup(ctx context.Context, baseDir string, excludes []strin
 		fmt.Println("Creating archive...")
 		f, err := os.CreateTemp("", "uptime")
 		if err != nil {
-			log.Printf("Could not create temporary archive file: %s", err)
+			return fmt.Errorf("could not create temporary archive file: %s", err)
 		}
 		defer os.RemoveAll(f.Name())
 
 		if err := o.archiveDir(absPath, f); err != nil {
-			log.Printf("Could not archive %s: %s", absPath, err)
+			return fmt.Errorf("could not archive %s: %s", absPath, err)
 		}
 		f.Close()
 
@@ -78,7 +78,7 @@ func (o *Operation) Backup(ctx context.Context, baseDir string, excludes []strin
 			Body:   f,
 		})
 		if err != nil {
-			log.Printf("Could not upload archive to S3: %s", err)
+			return fmt.Errorf("could not upload archive to S3: %s", err)
 		}
 
 		fmt.Println("Upload complete!")
