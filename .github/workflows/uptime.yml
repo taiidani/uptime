@@ -11,7 +11,8 @@ jobs:
     strategy:
       matrix:
         url:
-          - "https://guess.taiidani.com"
+          - "https://guessmyword.xyz"
+          - "https://taiidani.com"
 
     steps:
       - name: Perform check
