@@ -1,0 +1,72 @@
+name: main
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      filename: ${{ steps.filename.outputs.filename }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: build
+        env:
+          CGO_ENABLED: "0"
+        run: go build -o ./uptime
+
+      - name: filename
+        id: filename
+        run: echo "filename=uptime-$(date +'%Y.%m.%d')-${GITHUB_SHA::6}_linux_amd64.tgz" >> "$GITHUB_OUTPUT"
+
+      - name: package
+        run: tar cvzf ./${{ steps.filename.outputs.filename }} uptime
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "artifact"
+          path: ./${{ steps.filename.outputs.filename }}
+          if-no-files-found: error
+          retention-days: 1
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Staticcheck
+        uses: dominikh/staticcheck-action@v1.3.1
+        with:
+          install-go: false
+
+      - name: Test
+        run: go test -race -covermode=atomic ./...
+
+  upload:
+    uses: taiidani/deploy-action/.github/workflows/publish-binary.yml@main
+    needs: [build, test]
+    with:
+      filename: "${{ needs.build.outputs.filename }}"
+
+  deploy:
+    uses: taiidani/deploy-action/.github/workflows/nomad.yml@main
+    needs: upload
+    if: ${{ github.ref == 'refs/heads/main' }}
+    with:
+      artifact: "${{ needs.upload.outputs.artifact }}"
+      jobspec: uptime.nomad
