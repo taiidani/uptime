@@ -81,6 +81,7 @@ func loadClient(ctx context.Context) (*s3.Client, error) {
 			_, err := client.ListBuckets(ctx, &s3.ListBucketsInput{})
 			if err != nil {
 				log.Printf("Could not perform ListBuckets operation: %s", err)
+				log.Print("Will retry in 3 seconds")
 				time.Sleep(time.Second * 3)
 				continue
 			}
