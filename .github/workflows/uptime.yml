@@ -12,7 +12,7 @@ jobs:
       matrix:
         url:
           - "https://guessmyword.xyz"
-          - "https://taiidani.com"
+          # - "https://taiidani.com"
 
     steps:
       - name: Perform check
