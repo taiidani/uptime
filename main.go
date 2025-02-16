@@ -64,7 +64,13 @@ func flags() {
 }
 
 func loadClient(ctx context.Context) (*s3.Client, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-west-2"))
+	endpoint := os.Getenv("AWS_ENDPOINT")
+	region := os.Getenv("AWS_REGION")
+
+	cfg, err := config.LoadDefaultConfig(ctx,
+		config.WithRegion(region),
+		config.WithBaseEndpoint(endpoint),
+	)
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
