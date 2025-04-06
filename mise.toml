@@ -1,0 +1,35 @@
+[env]
+_.file = ".env"
+
+[tools]
+golang = "1.23.0"
+staticcheck = 'latest'
+
+[vars]
+filename = 'uptime'
+
+[tasks.default]
+description = "Execute the app in development mode"
+depends = ["build"]
+run = ["./{{vars.filename}}"]
+
+[tasks.build]
+description = "Execute the app in development mode"
+depends = ["dependencies", "test", "lint"]
+env.CGO_ENABLED = "0"
+run = ["go build -o ./{{vars.filename}}"]
+
+[tasks.dependencies]
+description = "Download binary dependencies"
+run = ["go mod download"]
+
+[tasks.test]
+description = "Unit tests"
+depends = ["dependencies"]
+env.DEV = "false"
+env.CGO_ENABLED = 1                                    # Required for -race
+run = ["go test -race -covermode=atomic -cover ./..."]
+
+[tasks.lint]
+depends = ["dependencies"]
+run = ["go vet ./...", "staticcheck ./..."]

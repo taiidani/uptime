@@ -9,17 +9,10 @@ jobs:
       filename: ${{ steps.filename.outputs.filename }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-          cache: true
+      - uses: jdx/mise-action@v2
 
       - name: build
-        env:
-          CGO_ENABLED: "0"
-        run: go build -o ./uptime
+        run: mise run build
 
       - name: filename
         id: filename
@@ -35,31 +28,9 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-          cache: true
-
-      - name: Vet
-        run: go vet ./...
-
-      - name: Staticcheck
-        uses: dominikh/staticcheck-action@v1.3.1
-        with:
-          install-go: false
-
-      - name: Test
-        run: go test -race -covermode=atomic ./...
-
   upload:
     uses: taiidani/deploy-action/.github/workflows/publish-binary.yml@main
-    needs: [build, test]
+    needs: [build]
     with:
       filename: "${{ needs.build.outputs.filename }}"
 
