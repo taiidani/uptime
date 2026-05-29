@@ -2,23 +2,20 @@ package main
 
 import (
 	"context"
-	"flag"
 	"log"
 	"os"
 	"os/signal"
-	"path"
-	"strings"
 
 	"github.com/taiidani/uptime/internal"
 )
 
-var (
-	excludedOpts arrayFlag
-	folder       string
-)
+// var (
+// 	excludedOpts arrayFlag
+// 	folder       string
+// )
 
 func main() {
-	flags()
+	// flags()
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
@@ -45,28 +42,28 @@ func main() {
 	// }
 }
 
-type arrayFlag []string
+// type arrayFlag []string
 
-func (i *arrayFlag) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
+// func (i *arrayFlag) Set(value string) error {
+// 	*i = append(*i, value)
+// 	return nil
+// }
 
-func (i *arrayFlag) String() string {
-	return strings.Join(*i, ",")
-}
+// func (i *arrayFlag) String() string {
+// 	return strings.Join(*i, ",")
+// }
 
-func flags() {
-	flag.StringVar(&folder, "folder", "", "the folder to be backed up")
-	flag.Var(&excludedOpts, "exclude", "folder name to exclude from backup")
-	flag.Parse()
+// func flags() {
+// 	flag.StringVar(&folder, "folder", "", "the folder to be backed up")
+// 	flag.Var(&excludedOpts, "exclude", "folder name to exclude from backup")
+// 	flag.Parse()
 
-	if folder == "" {
-		log.Fatal("-folder flag is required")
-	} else if !path.IsAbs(folder) {
-		log.Fatal("-folder must be an absolute path")
-	}
-}
+// 	if folder == "" {
+// 		log.Fatal("-folder flag is required")
+// 	} else if !path.IsAbs(folder) {
+// 		log.Fatal("-folder must be an absolute path")
+// 	}
+// }
 
 // func loadClient(ctx context.Context) (*s3.Client, error) {
 // 	endpoint := os.Getenv("AWS_ENDPOINT")
