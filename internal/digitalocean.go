@@ -14,14 +14,14 @@ func (d *DynDNSOperation) findARecord(ctx context.Context, name string) (*godo.D
 	opts := &godo.ListOptions{PerPage: 200}
 
 	for {
-		records, resp, err := d.client.Domains.RecordsByTypeAndName(ctx, d.cfg.Domain, "A", fmt.Sprintf("%s.%s", d.cfg.Domain, name), opts)
+		records, resp, err := d.client.Domains.RecordsByType(ctx, d.cfg.Domain, "A", opts)
 		if err != nil {
 			return nil, err
 		}
 		slog.Info("Parsing domain records", "records", records)
 
 		for _, r := range records {
-			if r.Name == fmt.Sprintf("%s.%s", d.cfg.Domain, name) {
+			if r.Name == name || r.Name == fmt.Sprintf("%s.%s", name, d.cfg.Domain) {
 				return &r, nil
 			}
 		}
