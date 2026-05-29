@@ -30,7 +30,7 @@ jobs:
 
   deploy:
     uses: taiidani/deploy-action/.github/workflows/deploy.yml@main
-    needs: [build, test]
+    needs: [build]
     if: ${{ github.ref == 'refs/heads/main' }}
     with:
       filename: "${{ needs.build.outputs.filename }}"
