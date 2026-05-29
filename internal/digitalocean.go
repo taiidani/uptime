@@ -3,6 +3,7 @@ package internal
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/digitalocean/godo"
 )
@@ -17,9 +18,10 @@ func (d *DynDNSOperation) findARecord(ctx context.Context, name string) (*godo.D
 		if err != nil {
 			return nil, err
 		}
+		slog.Info("Parsing domain records", "records", records)
 
 		for _, r := range records {
-			if r.Name == name {
+			if r.Name == fmt.Sprintf("%s.%s", d.cfg.Domain, name) {
 				return &r, nil
 			}
 		}
