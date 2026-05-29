@@ -13,7 +13,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/taiidani/uptime/internal/backup"
+	"github.com/taiidani/uptime/internal"
 )
 
 var (
@@ -27,17 +27,26 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	fmt.Println("Initializing S3 Client")
-	client, err := loadClient(ctx)
+	dns, err := internal.NewDynDNSOperation()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Performing backup of %s subdirectories\n", folder)
-	optBackup := backup.NewOperation(client)
-	if err := optBackup.Backup(ctx, folder, excludedOpts); err != nil {
+	if err := dns.Run(ctx); err != nil {
 		log.Fatal(err)
 	}
+
+	// fmt.Println("Initializing S3 Client")
+	// client, err := loadClient(ctx)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Printf("Performing backup of %s subdirectories\n", folder)
+	// optBackup := backup.NewOperation(client)
+	// if err := optBackup.Backup(ctx, folder, excludedOpts); err != nil {
+	// 	log.Fatal(err)
+	// }
 }
 
 type arrayFlag []string
