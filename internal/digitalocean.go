@@ -13,7 +13,7 @@ func (d *DynDNSOperation) findARecord(ctx context.Context, name string) (*godo.D
 	opts := &godo.ListOptions{PerPage: 200}
 
 	for {
-		records, resp, err := d.client.Domains.RecordsByTypeAndName(ctx, d.cfg.Domain, "A", name, opts)
+		records, resp, err := d.client.Domains.RecordsByTypeAndName(ctx, d.cfg.Domain, "A", fmt.Sprintf("%s.%s", d.cfg.Domain, name), opts)
 		if err != nil {
 			return nil, err
 		}
