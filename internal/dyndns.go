@@ -119,7 +119,7 @@ func (d *DynDNSOperation) checkAndUpdate(ctx context.Context) error {
 		rec, err := d.findARecord(ctx, name)
 		if err != nil || rec == nil {
 			erred = true
-			log.Warn("dyndns: no A record found – skipping it")
+			log.Warn("dyndns: no A record found – skipping it", "error", err)
 			continue
 		}
 
