@@ -3,16 +3,12 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"path"
 	"strings"
-	"time"
 
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/taiidani/uptime/internal"
 )
 
@@ -72,38 +68,38 @@ func flags() {
 	}
 }
 
-func loadClient(ctx context.Context) (*s3.Client, error) {
-	endpoint := os.Getenv("AWS_ENDPOINT")
-	region := os.Getenv("AWS_REGION")
+// func loadClient(ctx context.Context) (*s3.Client, error) {
+// 	endpoint := os.Getenv("AWS_ENDPOINT")
+// 	region := os.Getenv("AWS_REGION")
 
-	cfg, err := config.LoadDefaultConfig(ctx,
-		config.WithRegion(region),
-		config.WithBaseEndpoint(endpoint),
-	)
-	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
-	}
+// 	cfg, err := config.LoadDefaultConfig(ctx,
+// 		config.WithRegion(region),
+// 		config.WithBaseEndpoint(endpoint),
+// 	)
+// 	if err != nil {
+// 		log.Fatalf("unable to load SDK config, %v", err)
+// 	}
 
-	client := s3.NewFromConfig(cfg)
+// 	client := s3.NewFromConfig(cfg)
 
-	// Perform a sanity check on the credentials
-	// Make a few attempts before giving up
-	for attempts := 0; attempts < 5; attempts++ {
-		select {
-		case <-ctx.Done():
-			return nil, fmt.Errorf("operation canceled")
-		default:
-			_, err := client.ListBuckets(ctx, &s3.ListBucketsInput{})
-			if err != nil {
-				log.Printf("Could not perform ListBuckets operation: %s", err)
-				log.Print("Will retry in 3 seconds")
-				time.Sleep(time.Second * 3)
-				continue
-			}
+// 	// Perform a sanity check on the credentials
+// 	// Make a few attempts before giving up
+// 	for attempts := 0; attempts < 5; attempts++ {
+// 		select {
+// 		case <-ctx.Done():
+// 			return nil, fmt.Errorf("operation canceled")
+// 		default:
+// 			_, err := client.ListBuckets(ctx, &s3.ListBucketsInput{})
+// 			if err != nil {
+// 				log.Printf("Could not perform ListBuckets operation: %s", err)
+// 				log.Print("Will retry in 3 seconds")
+// 				time.Sleep(time.Second * 3)
+// 				continue
+// 			}
 
-			return client, nil
-		}
-	}
+// 			return client, nil
+// 		}
+// 	}
 
-	return nil, fmt.Errorf("unable to validate AWS credentials")
-}
+// 	return nil, fmt.Errorf("unable to validate AWS credentials")
+// }
