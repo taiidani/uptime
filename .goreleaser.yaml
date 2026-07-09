@@ -1,26 +1,31 @@
-# Make sure to check the documentation at https://goreleaser.com
-before:
-  hooks:
-    # You may remove this if you don't use go modules.
-    - go mod tidy
+project_name: uptime
+
 builds:
-  - env:
+  - id: uptime
+    main: .
+    binary: uptime
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
       - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: amd64
+    ldflags:
+      - -s -w
+
 archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      amd64: x86_64
+  - id: default
+    formats: [tar.gz]
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+
 checksum:
-  name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  name_template: "checksums.txt"
+
 changelog:
-  sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
+  use: github-native
