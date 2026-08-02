@@ -1,0 +1,8 @@
+default_provider = "onepass"
+
+[providers.onepass]
+type = "1password"
+vault = "Development"
+
+[secrets]
+"DO_TOKEN"= { provider = "onepass", value = "DigitalOcean/credential" }

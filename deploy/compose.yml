@@ -1,0 +1,44 @@
+services:
+  uptime-ryannixon:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      DO_TOKEN: secret://DO_TOKEN
+      DO_DOMAIN: "ryannixon.com"
+      DO_UPDATE_RECORDS: "home"
+
+  uptime-taiidani:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      DO_TOKEN: secret://DO_TOKEN
+      DO_DOMAIN: "taiidani.com"
+      DO_UPDATE_RECORDS: "@,home"
+
+  uptime-ryannixon-dev:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      DO_TOKEN: secret://DO_TOKEN
+      DO_DOMAIN: "ryannixon.dev"
+      DO_UPDATE_RECORDS: "@"
+
+  uptime-guessmyword:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      DO_TOKEN: secret://DO_TOKEN
+      DO_DOMAIN: "guessmyword.xyz"
+      DO_UPDATE_RECORDS: "@"
+
+secrets:
+  DO_TOKEN:
+    x-command: fnox get DO_TOKEN
